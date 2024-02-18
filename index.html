@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/docs/CSS/login.css">
+    <link rel="icon" type="image/png" sizes="16x16" href="/docs/images/favicon-16x16.png">
+    <title>DonutMaker</title>
+</head>
+<body>
+        <div class="imgcontainer">
+          <img src="/docs/images/Donut1.png" alt="Avatar" class="avatar">
+        </div>
+      
+        <div class="container">
+          <label for="uname"><b>Username</b></label>
+          <br>
+          <input id="unames" type="text" placeholder="Enter Username" name="uname" required>
+          <br>
+
+          <label for="psw"><b>Password</b></label>
+          <br>
+          <input id="psws" type="password" placeholder="Enter Password" name="psw" required>
+          <br>
+          <div id="errorMessage"></div>
+      
+          <button type="submit" onclick="login(event)">Login</button>
+          <br>
+          <label>
+            <input type="checkbox" checked="checked" name="remember"> Remember me
+          </label>
+        </div>
+      
+        <div class="container" style="background-color:#f1f1f1">
+          <button type="button" class="createbtn" onclick="createbtn()">create</button>
+          <span class="psw">Forgot <a href="#">password?</a></span>
+        </div>
+      </form>
+    <script src="/docs/JavaScript/login.js"></script>
+</body>
+</html>
