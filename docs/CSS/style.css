@@ -1,9 +1,9 @@
 header{
-    background-image: url(/docs/images/hdBg1.jpg);
+    background-image: url(/images/hdBg1.jpg);
 }
 
 .modal {
-    background-image: url(/docs/images/ModalBg.jpg);
+    background-image: url(/images/ModalBg.jpg);
   }
 
 header button{
@@ -32,7 +32,7 @@ header button{
 }
 
 body{
-    background-image: url(/docs/images/Bg1.jpg);
+    background-image: url(/images/Bg1.jpg);
     background-size: repeat;
 }
 
@@ -43,7 +43,7 @@ footer button{
 
 main button{
     border: 3px solid pink;
-    background-image: url(/docs/images/mainBtnBg.jpg);
+    background-image: url(/images/mainBtnBg.jpg);
     font-weight: bold;
 }
 

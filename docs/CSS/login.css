@@ -1,5 +1,5 @@
 body{
-    background-image: url(/docs/images/Bg1.jpg);
+    background-image: url(/images/Bg1.jpg);
     background-size: repeat;
 }
   
@@ -30,6 +30,11 @@ body{
     cursor: pointer;
     width: 25%;
   }
+
+  #errorMessage {
+    color: red;
+    background-color: white;
+  }
   
   /* Add a hover effect for buttons */
   button:hover {
@@ -37,7 +42,7 @@ body{
   }
   
   /* Extra style for the cancel button (red) */
-  .cancelbtn {
+  .createbtn {
     width: auto;
     padding: 10px 18px;
     background-color: #f44336;
@@ -71,7 +76,7 @@ body{
       display: block;
       float: none;
     }
-    .cancelbtn {
+    .createbtn {
       width: 100%;
     }
   }
