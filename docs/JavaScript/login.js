@@ -20,7 +20,7 @@ function login(event){
         .then(apiAuth => {
             isAuthenticated = apiAuth.Auth;
             if(isAuthenticated){
-                window.location.replace("/html/DonutMaker.html");
+                window.location.replace("/html/mainMenu.html");
                 
             } else {
                 document.getElementById("errorMessage").innerText = "Username or password is incorrect.\npassword is case sensitive.";
@@ -39,35 +39,54 @@ function create() {
     let enteruname = document.getElementById("enteruname").value.toUpperCase();
     let enterpsw = document.getElementById("enterpsw").value;
     let renterpsw = document.getElementById("renterpsw").value;
-    const info = { enteruname, enterpsw, renterpsw };
-    const settings = {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(info)
-    };
+    let email = document.getElementById("enteremail").value.toLowerCase();
+    let regx = /^([a-zA-Z0-9\._]+)@([a-zA-Z0-9])+.([a-z]+)(.[a-z]+)?$/
+    let info = { enteruname, enterpsw };
 
-    fetch('/apicreate', settings)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(apiAva => {
-            let isAvailable = apiAva.Ava;
+    if(enterpsw === renterpsw){
+        const settings = {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(info)
+        };
+    
+        fetch('/apicreate', settings)
+            .then(async response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                let answer = await response.json();
+                return answer;
+            })
+            .then(apiAva => {
+                let isAvailable = apiAva.Ava;
+                
+                if (isAvailable) {
+                    if(regx.text(email)){
+                        const choices = {
+                            method: 'POST',
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(email)
+                        };
 
-            if (enterpsw !== renterpsw) {
-                document.getElementById("errorMessageEnter2").innerHTML = "Passwords do not match.";
-            } else if (isAvailable && enterpsw === renterpsw) {
-                window.location.replace("/html/DonutMaker.html");
-            } else {
-                document.getElementById("errorMessageEnter1").innerHTML = "Username is not available.";
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            // Handle error here
-        });
+                        fetch('/apicreate', choices);
+                        window.location.replace("/html/mainmenu.html");
+                    } else {
+                        document.getElementById("errorMessageEnter3").innerHTML = "Email is not valid.";
+                    }
+                } else {
+                    document.getElementById("errorMessageEnter1").innerHTML = "Username is not available.";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle error here
+            });
+    } else {
+        document.getElementById("errorMessageEnter2").innerHTML = "Passwords do not match.";
+    }
 }

@@ -1,7 +1,5 @@
 const express = require('express');
-const Datastore = require('nedb');
-let unames = ["USERNAME"];
-let psws = ["password"];
+const Datastore = require('nedb');;
 let isAuthenticated = false;
 
 const app = express();
@@ -15,42 +13,56 @@ database.loadDatabase();
 app.post('/apilogin', (request, response) => {
     let uname = request.body.uname;
     let psw = request.body.psw;
-
-    for (var i = 0; i < unames.length; i++) {
-        if(uname === unames[i] && psw === psws[i]){
+    database.find({ enteruname: uname, enterpsw: psw }, function (err, data){
+        let unames = data[0].enteruname;
+        let psws = data[0].enterpsw;
+    
+        if(uname === unames && psw === psws){
             isAuthenticated = true;
-            break;
         }
-    }
-
-    response.json({
-        Auth: isAuthenticated
-    })
+    
+        response.json({
+            Auth: isAuthenticated
+        })
+    });
 });
 
-app.post('/apicreate', async (request, response) => {
+app.post('/apicreate', (request, response) => {
     try {
         let info = request.body;
         let unamecreate = info.enteruname;
-        let pswcreate = info.enterpsw;
-        let repswcreate = info.renterpsw;
+        console.log(info);
 
         // Assuming `database.find()` returns a promise
-        let searchUname = await database.find({ Username: unamecreate });
-
-        let isAvailable = false; // Assuming it's available by default
-
-        if (searchUname.length > 0) { // Assuming searchUname is an array
-            isAvailable = false;
-        } else if(isAvailable && pswcreate === repswcreate){
-            await database.insert(info);
-        }
-
-        response.json({
-            Ava: isAvailable
+        database.find({ enteruname: unamecreate }, function (err, data2){
+            // retrieve the results as an array
+            let searchResults = data2;
+    
+            let isAvailable = false; // Assuming it's not available by default
+    
+            if (!searchResults) {
+                // Handle case when data2 is undefined
+                console.log("No search results found.");
+            } else if (searchResults.length > 0) {
+                // Username already exists
+                console.log("Username already exists.");
+            } else {
+                // Username is available
+                isAvailable = true;
+                database.insert(info);
+                console.log("Inserted new user:", info);
+            }
+    
+            response.json({
+                Ava: isAvailable
+            });
         });
     } catch (error) {
-        console.error(error);
+        console.error("Error:", error);
         response.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+
+
+
