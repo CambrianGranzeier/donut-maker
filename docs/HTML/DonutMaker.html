@@ -4,72 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/CSS/layout.css">
-    <link rel="stylesheet" href="/CSS/style.css">
+    <link rel="stylesheet" href="/CSS/donutmaker.css">
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
     <title>DonutMaker</title>
 </head>
 <body>
     <header id="header">
-        <button id="about">About</button>
-
-        <div id="aboutModal" class="modal">
-        
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <p>Fred the Baker is tired of making real donuts and is ready to retire.</p>
-          </div>
-        </div>
-
-        <button id="contact">Contact</button>
-
-        <div id="contactModal" class="modal">
-        
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <p>
-                <a class="links" href=mailto:donutmaker.net@gmail.com>donutmaker.net@gmail.com</a>
-                <a class="links" href="https://www.linkedin.com/in/michael-granzeier/">LinkedIn</a><br>
-                <a class="links" href="https://michaelgranzeier.github.io/">My Website</a>
-            </p>
-          </div>
-        </div>
-
-        <button id="inspiration">Inspiration</button>
-
-        <div id="inspirationModal" class="modal">
-        
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h4><a class="links" href="https://orteil.dashnet.org/cookieclicker/">Cookie Clicker</a></h4>
-            <p>Cookie Clicker is a javascript game by Orteil and Opti.</p>
-          </div>
-        </div>
-
-        <button id="shop">Shop</button>
-
-        <div id="shopModal" class="modal">
-        
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h4>Background</h4>
-            <p>cost: 100</p>
-            <button class="si" onclick="bg1()"><img src="/images/Bg1.jpg" alt="a donut"></button>
-            <button class="si" onclick="bg2()"><img src="/images/Bg2.jpg" alt="a donut"></button>
-            <button class="si" onclick="bg3()"><img src="/images/Bg3.jpg" alt="a donut"></button>
-            <h4>Header Background</h4>
-            <p>Cost: 50</p>
-            <button class="si" onclick="hdBg1()"><img src="/images/hdBg1.jpg" alt="a donut"></button>
-            <button class="si" onclick="hdBg2()"><img src="/images/hdBg2.jpg" alt="a donut"></button>
-            <button class="si" onclick="hdBg3()"><img src="/images/hdBg3.jpg" alt="a donut"></button>
-            <h4>Header Background</h4>
-            <p>Cost: 200</p>
-            <button class="si" onclick="dn1()"><img src="/images/Donut1.png" alt="a donut"></button>
-            <button class="si" onclick="dn2()"><img src="/images/Donut2.png" alt="a donut"></button>
-            <button class="si" onclick="dn3()"><img src="/images/Donut3.png" alt="a donut"></button>
-          </div>
-        </div>
-        
+      <button type="submit" onclick="logout()">Logout</button>
+      <button type="submit" onclick="back()">Back</button>
     </header>
         <main>
           <h1 class="hS">High Score: <a id="hSNum">0</a></h1>

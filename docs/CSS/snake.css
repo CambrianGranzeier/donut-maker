@@ -14,16 +14,31 @@ header button {
     margin-top: .5em;
 }
 
+.heading{
+    font-family: sans-serif;
+    color: red;
+}
+
+#grid{
+    display: grid;
+    background-color: hotpink;
+}
+
+.grid-item{
+    border: 1px dashed;
+    border-color: rgb(186, 186, 186);
+    text-align: center;
+    font-size: small;
+}
+
+p {
+    font-family: sans-serif;
+    color: red;
+}
+
 body {
     margin: 0 auto;
     max-width: 1000px;
     background-image: url(/images/Bg1.jpg);
     background-size: repeat;
-}
-
-#menuContainer {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px,150px));
-    grid-template-rows: auto;
-    grid-gap:.5em;
 }

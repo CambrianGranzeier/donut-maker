@@ -1,11 +1,45 @@
 const e = require("express");
 const { response } = require("express");
 
+
+// When the "remember me" box is checked, set the boolean value in localStorage
+function rememberMeCheckboxChanged() {
+    let rememberMeCheckbox = document.getElementById("rememberMeCheckbox");
+    localStorage.setItem("boxChecked", rememberMeCheckbox.checked);
+}
+
+// Function to remember the username if the "remember me" box was checked
+function remember() {
+    let box = localStorage.getItem("boxChecked");
+    console.log("Box value:", box);
+    
+    // Check if the "remember me" box was checked
+    if (box === "true") { // Note: Check for string "true"
+        let rememberCheck = localStorage.getItem("remember");
+        console.log("Remember value:", rememberCheck);
+
+        if (rememberCheck != null) {
+            document.getElementById("unames").value = rememberCheck;
+            console.log("Value set to 'unames' input field.");
+        } else {
+            console.log("No value found for 'remember' key in localStorage.");
+        }
+    } else {
+        console.log("The 'remember me' box was not checked last time.");
+    }
+}
+
 function login(event){
     event.preventDefault(); // prevent default form submission
+    let checkbox = document.getElementById('remember');
     let uname = document.getElementById("unames").value.toUpperCase();
     let psw = document.getElementById("psws").value;
+    localStorage.setItem("boxChecked", checkbox.checked);
     let isAuthenticated = false;
+
+    if(checkbox.checked){
+        localStorage.setItem("remember", uname)
+    }
 
     const data = { uname, psw };
     const options = {

@@ -42,7 +42,6 @@ app.post('/apilogin', (request, response) => {
         let decryptedPsw;
         try {
             decryptedPsw = CryptoJS.AES.decrypt(encryptedPsw, key).toString(CryptoJS.enc.Utf8);
-            console.log("Decrypted password:", decryptedPsw);
         } catch (error) {
             console.error("Error decrypting password:", error);
         }
@@ -64,14 +63,22 @@ app.post('/apicreate', (request, response) => {
     try {
         let info = request.body;
         let email = CryptoJS.AES.encrypt(info.email, key).toString(); // Convert encrypted data to string
-        console.log("password: ", info.enterpsw);
         let password = CryptoJS.AES.encrypt(info.enterpsw, key).toString(); // Convert encrypted data to string
         let unamecreate = info.enteruname;
-        console.log("create key: ", key)
+        let donutMaker = {
+            highScore: 0,
+            auto: 0,
+            autoCost: 100,
+            multi: 0,
+            multiCost: 100,
+            donut: 0,
+            multiDonut: 1
+        };
         let Cinfo = { 
             uname: unamecreate, 
             password: password, 
-            email: email 
+            email: email,
+            donutMaker
         };
 
         // Assuming `database.find()` returns a promise
@@ -107,4 +114,39 @@ app.post('/apicreate', (request, response) => {
         console.error("Error:", error);
         response.status(500).json({ error: 'Internal Server Error' });
     }
+});
+
+app.post('/apiDonutMaker', (request, response) => {
+    let details = request.body;
+    let username = details.username;
+    let highScore = details.highScore;
+    let auto = details.auto;
+    let autoCost = details.autoCost;
+    let multi = details.multi;
+    let multiCost = details.multiCost;
+    let donut = details.donut;
+    
+    // Create an object with the fields and values to update
+    let updateObject = {
+        highScore: highScore,
+        auto: auto,
+        autoCost: autoCost,
+        multi: multi,
+        multiCost: multiCost,
+        donut: donut
+    };
+
+    database.update({ uname: username }, { $set: updateObject }, { upsert: true }, function (err, numReplaced, upsert) {
+        if (err) {
+            console.error("Error updating document:", err);
+            response.status(500).json({ error: 'Internal Server Error' });
+            return;
+        }
+
+        console.log("Number of documents replaced:", numReplaced);
+        console.log("Upsert:", upsert);
+
+        // Send a response indicating the update was successful
+        response.json({ success: true });
+    });
 });

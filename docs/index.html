@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
     <title>DonutMaker</title>
 </head>
-<body>
+<body onload="remember()">
         <div class="imgcontainer">
           <img src="/images/Donut1.png" alt="Avatar" class="avatar">
         </div>
@@ -28,7 +28,7 @@
           <button type="submit" onclick="login(event)">Login</button>
           <br>
           <label>
-            <input type="checkbox" checked="checked" name="remember"> Remember me
+            <input id="remember" type="checkbox" checked="checked" name="remember"> Remember me
           </label>
         </div>
       
