@@ -1,193 +1,224 @@
-// Variables
-let snakeBody = [ {x:0,y:1} ];
-let snakeDir = 1; // 0,1,2,3 ... N,S,E,W
-let snakeLen = 2;
-// NOTE: add a display text for our snake's direction
+let snakebod = [ {x:0, y:0} ];
+let snakedir = 1;
+let snakeleng = 1;
+let foodloc = {x:1, y:1};
 let score = 0;
-let highscore = 0;
+let highScore = 0;
+const gridH = 20;
+const gridW = 50;
+let diff;
+let acc = 0;
+let grid = document.getElementById("grid");
 
-let foodPosn = {x: 5, y: 3} // foodposn is an object with properties x and y
-
-// one idea: we'll put the snake in each of the grid spots
-// NOTE: revisit + refactor this
-const gridHeight = 20;
-const gridWidth = 50;
-// DOM Manipulation
-let gridHTML = document.getElementById("grid");
-gridHTML.style.gridTemplateColumns = "repeat(" + gridWidth + ", 20px)";
-gridHTML.style.gridTemplateRows = "repeat(" + gridHeight + ", 20px)";
-for(let i = 0; i < gridHeight; i++){
-    for(let j = 0; j < gridWidth; j++){
-        // grid.push({x:j, y:i } )
-        let gridSpaceHTML = document.createElement("div"); // this HTML item represents a space on our grid
-        gridSpaceHTML.id = j + "," + i; // gives the space an id of 'j,i'
-        gridSpaceHTML.classList.add("grid-item");
-        gridHTML.append(gridSpaceHTML); 
+grid.style.gridTemplateColumns = "repeat(" + gridW + ", 20px)";
+grid.style.gridTemplateRows = "repeat(" + gridH + ", 20px)";
+for(let i = 0; i < gridH; i++){
+    for(let j = 0; j < gridW; j++){
+        let gridSpace = document.createElement("div");
+        gridSpace.id = j + "," + i;
+        gridSpace.classList.add("grid-item");
+        grid.append(gridSpace); 
     }
 }
 
-// Functions
-function DrawFood(){
-    // grab the html element where our food is located
-    let foodSpaceHTML = document.getElementById(foodPosn.x + "," + foodPosn.y);
-    // update its visuals
-    foodSpaceHTML.innerHTML = `<img id="donut" src="/images/favicon-16x16.png" alt="a donut">`;
-    // done.
-}
-RandomizeFoodPosn();
-DrawFood();
+const modal = document.getElementById("diffModal");
+modal.style.display = "none";
 
-function DrawSnake(){
-    for(let i = 0; i < snakeBody.length; i++){
-        let snakeSpaceHTML = document.getElementById(snakeBody[i].x + "," + snakeBody[i].y);
-        // update its visuals
+document.addEventListener("DOMContentLoaded", function() {
+    modal.style.display = "block";
+    const span = document.getElementsByClassName("close")[0];
+    clearInterval(gameInterval);
 
-        snakeSpaceHTML.innerText = i == 0 ? "💀" : "🎃";
-    }
-
-}
-DrawSnake();
-
-// creates a random position from 0,0 to 9,9
-function RandomizeFoodPosn(){
-    foodPosn.x = Math.floor(Math.random() * gridWidth);
-    foodPosn.y = Math.floor(Math.random() * gridHeight);
-}
-
-function MoveSnake(){
-    // create a new head for our snake
-    let newSnakeHead = {x:false, y:false}
-    switch(snakeDir){
-        case 0: // NORTH
-            newSnakeHead.x = snakeBody[0].x;
-            newSnakeHead.y = snakeBody[0].y - 1;
-            break;
-        case 1: // SOUTH
-            newSnakeHead.x = snakeBody[0].x;
-            newSnakeHead.y = snakeBody[0].y + 1;
-            break;
-        case 2: // EAST
-            newSnakeHead.x = snakeBody[0].x + 1;
-            newSnakeHead.y = snakeBody[0].y;
-            break;
-        case 3: // WEST
-            newSnakeHead.x = snakeBody[0].x - 1;
-            newSnakeHead.y = snakeBody[0].y;
-            break;
-    }
-    // handle the case when our snake goes off the board.
-    if(newSnakeHead.x < 0){
-        newSnakeHead.x += gridWidth;
-    }
-    if(newSnakeHead.y < 0){
-        newSnakeHead.y += gridHeight;
-    }
-    // wrap around.
-    newSnakeHead.x = newSnakeHead.x % gridWidth;
-    newSnakeHead.y = newSnakeHead.y % gridHeight;
-    // add the new head to our body
-    snakeBody.unshift(newSnakeHead);
-    //console.log(snakeBody);
-    // check if fruit coordinate exists on our snake
-    let grow = false;
-    for(let i = 0; i < snakeBody.length; i++){
-        grow = snakeBody[i].x == foodPosn.x && snakeBody[i].y == foodPosn.y
-        if(grow){ //grow is true, break out of the loop
-            clearInterval(gameInterval);
-            gameInterval = setInterval(PlayGame, 200 - (score));
-            snakeLen++;
-            score++;
-            RandomizeFoodPosn();
-            break;
-        }
-    }
-    if(!grow){
-        //remove our tail*
-        snakeBody.pop(); // removes the last item from our array
-    }
-    // check if newsnakehead already exists on our snake
-    let die = false;
-    for(let i = 1; i < snakeBody.length; i++){
-        die = snakeBody[i].x == newSnakeHead.x && snakeBody[i].y == newSnakeHead.y
-        //console.log(die);
-        if(die){ //grow is true, break out of the loop
-            break;
-        }
-    }
-    if(die){
-        ResetGame();
-    }
-}
-// need a way to run this over time
-function PlayGame(){
-    // update our logic
-    MoveSnake();
-    // draw our game
-    ClearGrid();
-    DrawFood();
-    DrawSnake();
-    DrawScore();
-}
-
-// Intervals
-// intervals are timers. they run functions every few milliseconds
-// if we set multiple timers, code will run multiple times
-// in order to stop a timer, we use the clearInterval() method
-// in order to create a timer, we use the setIntverval() method
-// with set interval, we specify how many milliseconds in between each run and the function to run
-let gameInterval = setInterval(PlayGame, 200);
-
-
-
-// need a way to change directions
-document.addEventListener("keypress", (event) => {
-    if(event.code == "KeyA" && snakeDir != 2){
-        snakeDir = 3;
-    }
-    else if(event.code == "KeyW" && snakeDir != 1){
-        snakeDir = 0;
-    }
-    else if(event.code == "KeyS" && snakeDir != 0){
-        snakeDir = 1;
-    }
-    else if(event.code == "KeyD" && snakeDir != 3){
-        snakeDir = 2;
-    }
+    span.addEventListener("click", function() {
+        modal.style.display = "none";
+    });
 });
 
-// die / reset game function
-function ResetGame(){
-    if(score > highscore){
-        highscore = score; // this updates our high score if we beat it
-        let leaderboard = document.getElementById("highscore"); // grabs our score element
-        leaderboard.innerText = "High Score: " + highscore;
-    }
-    snakeBody = [ {x:0,y:0} ];
-    snakeDir = 1; // 0,1,2,3 ... N,S,E,W
-    snakeLen = 1;
-    score = 0;
-    RandomizeFoodPosn();
-    clearInterval(gameInterval);
-    gameInterval = setInterval(PlayGame, 200);
+let gameInterval;
+function easy(){
+    diff = "Easy";
+    gameInterval = setInterval(gameplay, 200);
+    modal.style.display = "none";
 }
 
-function DrawScore(){
-    // fill in later
-    let scoreboard = document.getElementById("score"); // grabs our score element
-    scoreboard.innerText = "Score: " + score;
+function normal(){
+    diff = "Normal";
+    gameInterval = setInterval(gameplay, 200);
+    modal.style.display = "none";
 }
 
-function ClearGrid(){
-    for(let i = 0; i < gridHeight; i++){
-        for(let j = 0; j < gridWidth; j++){
-            let gridSpaceHTML = document.getElementById( j + "," + i);
-            gridSpaceHTML.innerText = "";
+function hard(){
+    diff = "Hard";
+    gameInterval = setInterval(gameplay, 200);
+    modal.style.display = "none";
+}
+
+function drawFood(){
+    let foodSpace = document.getElementById(foodloc.x + "," + foodloc.y);
+    foodSpace.innerHTML = `<img id="donut" src="/images/favicon-16x16.png" alt="a donut"></img>`;
+}
+RandomizeFoodloc();
+drawFood();
+
+function drawSnake(){
+    for(let i = 0; i < snakebod.length; i++){
+        let snakeSpace = document.getElementById(snakebod[i].x + "," + snakebod[i].y);
+        if(snakeSpace == null){
+            resetgame();
+        } else {
+            snakeSpace.innerHTML = `<img id="donut" src="/images/favicon-16x16.png" alt="a donut"></img>`;
         }
     }
+}
+drawSnake();
+
+function RandomizeFoodloc(){
+    foodloc.x = Math.floor(Math.random() * gridW);
+    foodloc.y = Math.floor(Math.random() * gridH);
+}
+
+function snakeMove(){
+    let snakeHead = {x:false, y:false};
+    switch(snakedir){
+        case 0:
+            snakeHead.x = snakebod[0].x;
+            snakeHead.y = snakebod[0].y - 1;
+            break;
+        case 1:
+            snakeHead.x = snakebod[0].x;
+            snakeHead.y = snakebod[0].y + 1;
+            break;
+        case 2:
+            snakeHead.x = snakebod[0].x + 1;
+            snakeHead.y = snakebod[0].y;
+            break;
+        case 3:
+            snakeHead.x = snakebod[0].x - 1;
+            snakeHead.y = snakebod[0].y;
+            break;
+    }
+    
+    let die = false;
+    if(diff == "Easy" || diff == "Normal"){
+        if(snakeHead.x < 0){
+            snakeHead.x += gridW;
+        }
+    
+        if(snakeHead.y < 0){
+            snakeHead.y += gridH
+        }
+
+        snakeHead.x = snakeHead.x % gridW;
+        snakeHead.y = snakeHead.y % gridH;
+    } else if(diff == "Hard"){
+        if(snakeHead.x < 0 || snakeHead.x >= gridW){
+            die = true;
+        }
+    
+        if(snakeHead.y < 0 || snakeHead.y >= gridH){
+            die = true;
+        }
+    }
+    snakebod.unshift(snakeHead);
+
+    let grow = false;
+    for(let i = 0; i < snakebod.length; i++){
+        grow = snakebod[i].x == foodloc.x && snakebod[i].y == foodloc.y;
+        if(grow){
+            clearInterval(gameInterval);
+            if(diff == "Easy"){
+                gameInterval = setInterval(gameplay, 250);
+            }
+            if(diff == "Normal" || diff == "Hard"){
+                gameInterval = setInterval(gameplay, 200 - (acc));
+                if(score % 5 == 0){
+                    acc = acc + 10;
+                }
+            }
+            snakeleng++;
+            score++;
+            RandomizeFoodloc();
+            break;
+        }
+    }
+
+    if(!grow){
+        snakebod.pop();
+    }
+
+    for(let i = 1; i < snakebod.length; i++){
+        die = snakebod[i].x == snakeHead.x && snakebod[i].y == snakeHead.y;
+
+        if(die){
+            break;
+        }
+    }
+
+    if(die){
+        resetgame();
+    }
+}
+
+function gameplay(){
+    snakeMove();
+    clearGrid();
+    drawFood();
+    drawSnake();
+    drawScore();
+}
+
+document.addEventListener("keypress", (event) => {
+    if(event.code == "KeyA" && snakedir != 2){
+        snakedir = 3;
+    } else if(event.code == "KeyS" && snakedir != 0){
+        snakedir = 1;
+    } else if(event.code == "KeyD" && snakedir != 3){
+        snakedir = 2;
+    } else if(event.code == "KeyW" && snakedir != 1){
+        snakedir = 0;
+    }
+})
+
+function resetgame(){
+    if(score > highScore){
+        highscore = score;
+        let leaderboard = document.getElementById("highscore");
+        leaderboard.innerText = "High Score: " + highscore;
+    }
+    snakebod = [ {x:0,y:0} ];
+    snakedir = 1;
+    snakeleng = 1;
+    score = 0;
+    acc = 0;
+    RandomizeFoodloc();
+    difficulty()
+}
+
+function drawScore(){
+    let scoreBoard = document.getElementById("score");
+    scoreBoard.innerHTML = "Score: " + score;
+}
+
+function clearGrid(){
+    for(i = 0; i < gridH; i++){
+        for(j = 0; j < gridW; j++){
+            let gridSpace = document.getElementById(j + "," + i);
+            gridSpace.innerText = "";
+        }
+    }
+}
+
+function difficulty(){
+    modal.style.display = "block";
+    const span = document.getElementsByClassName("close")[0];
+    clearInterval(gameInterval);
+
+    span.addEventListener("click", function() {
+        modal.style.display = "none";
+    });
 }
 
 function logout(){
-    let input;
     if(confirm("Are you sure you want to logout?")){
         window.location.replace("/index.html");
     }

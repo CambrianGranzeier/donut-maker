@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game</title>
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
     <link rel="stylesheet" href="/CSS/snake.css">
+    <title>Snake Game</title>
 </head>
 <body>
     <header id="header">
@@ -15,8 +16,17 @@
         </h1>
         <button type="submit" onclick="logout()">Logout</button>
       </header>
-    <p id="score">Score: 0</p>
-    <p id="highscore">High Score: 0</p>
+      <p id="score">Score: 0</p>
+      <p id="highscore">High Score: 0</p>
+      <div id="diffModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Choose your difficulty</h2>
+            <button class="diffbtn" type="submit" onclick="easy()">Easy</button>
+            <button class="diffbtn" type="submit" onclick="normal()">Normal</button>
+            <button class="diffbtn" type="submit" onclick="hard()">Hard</button>
+        </div>
+      </div>
     <table id="grid">
     </table>
 </body>

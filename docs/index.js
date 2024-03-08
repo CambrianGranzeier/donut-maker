@@ -12,6 +12,12 @@ app.use(express.json({limit: '1mb'}));
 const database = new Datastore('database.db');
 database.loadDatabase();
 
+database.ensureIndex({ fieldName: 'uname', unique: true }, function (err) {
+    if (err) {
+        console.error("Error ensuring index:", err);
+    }
+});
+
 app.post('/apilogin', (request, response) => {
     let uname = request.body.uname;
     let psw = request.body.psw;
@@ -73,12 +79,12 @@ app.post('/apicreate', (request, response) => {
             multiCost: 100,
             donut: 0,
             multiDonut: 1
-        };
+        }
         let Cinfo = { 
             uname: unamecreate, 
             password: password, 
             email: email,
-            donutMaker
+            donutMaker: donutMaker
         };
 
         // Assuming `database.find()` returns a promise
@@ -125,6 +131,7 @@ app.post('/apiDonutMaker', (request, response) => {
     let multi = details.multi;
     let multiCost = details.multiCost;
     let donut = details.donut;
+    let multiDonut = details.multiDonut;
     
     // Create an object with the fields and values to update
     let updateObject = {
@@ -133,20 +140,36 @@ app.post('/apiDonutMaker', (request, response) => {
         autoCost: autoCost,
         multi: multi,
         multiCost: multiCost,
-        donut: donut
+        donut: donut,
+        multiDonut: multiDonut
     };
 
-    database.update({ uname: username }, { $set: updateObject }, { upsert: true }, function (err, numReplaced, upsert) {
+    // Find the document first
+    database.findOne({ uname: username }, function(err, doc) {
         if (err) {
-            console.error("Error updating document:", err);
+            console.error("Error finding document:", err);
             response.status(500).json({ error: 'Internal Server Error' });
             return;
         }
 
-        console.log("Number of documents replaced:", numReplaced);
-        console.log("Upsert:", upsert);
+        if (!doc) {
+            console.log("Document not found");
+            response.status(404).json({ error: 'Document not found' });
+            return;
+        }
 
-        // Send a response indicating the update was successful
-        response.json({ success: true });
+        // Update the document
+        database.update({ uname: username }, { $set: updateObject }, {}, function(err, numReplaced) {
+            if (err) {
+                console.error("Error updating document:", err);
+                response.status(500).json({ error: 'Internal Server Error' });
+                return;
+            }
+
+            console.log("Number of documents replaced:", numReplaced);
+
+            // Send a response indicating the update was successful
+            response.json({ success: true });
+        });
     });
 });
